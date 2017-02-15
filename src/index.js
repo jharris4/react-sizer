@@ -4,8 +4,8 @@ import hoistStatics from 'hoist-non-react-statics';
 import raf from 'raf';
 
 const defaultGetSize = domElement => ({width: domElement.clientWidth, height: domElement.clientHeight});
-const defaultWidthProp = 'containerWidth';
-const defaultHeightProp = 'containerHeight';
+const defaultWidthProp = 'width';
+const defaultHeightProp = 'height';
 const defaultGetDisplayName = name => `Sizer(${name})`;
 
 const placeholderStyle = {
