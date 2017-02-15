@@ -1,4 +1,4 @@
-import React, { Component, createElement } from 'react';
+import React, { Component, createElement } from 'react'; // eslint-disable-line no-unused-vars
 import { findDOMNode } from 'react-dom';
 import hoistStatics from 'hoist-non-react-statics';
 import raf from 'raf';
@@ -51,6 +51,10 @@ export default function sizer({
         }
       }
 
+      getWindow() {
+        return window; // eslint-disable-line no-undef
+      }
+
       onResize() {
         if (!this.rafId) {
           this.rafId = raf(() => {
@@ -58,7 +62,7 @@ export default function sizer({
             this.updateSize();
           });
         }
-      };
+      }
 
       updateSize() {
         if (this.parentDOMNode) {
@@ -72,11 +76,11 @@ export default function sizer({
 
       componentDidMount () {
         this.updateSize();
-        window.addEventListener('resize', this.onResize, false);
+        this.getWindow().addEventListener('resize', this.onResize, false);
       }
 
       componentWillUnmount () {
-        window.removeEventListener('resize', this.onResize);
+        this.getWindow().removeEventListener('resize', this.onResize);
       }
 
       render() {
