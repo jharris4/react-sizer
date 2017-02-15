@@ -65,6 +65,6 @@
     "clean": "rimraf lib",
     "build": "npm run clean && cross-env NODE_ENV=production babel src/ --out-dir lib",
     "lint": "eslint src",
-    "test": "karma start"
+    "test": "npm run lint && karma start"
   }
 }
