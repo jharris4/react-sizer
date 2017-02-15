@@ -52,5 +52,22 @@ describe('react-sizer', function() {
 
       render((<FixedParent><SizerChild/></FixedParent>), node);
     });
+
+    it('supports changing the width and height props', function(done) {
+      const SizerChild = sizer({
+        widthProp: 'myWidth',
+        heightProp: 'myHeight',
+        updateSizeCallback: () => {
+          expect(node.textContent).toEqual(FIXED_PARENT_WIDTH + ' x ' + FIXED_PARENT_HEIGHT);
+          done();
+        }
+      })(function(props) {
+        const { myWidth, myHeight } = props;
+
+        return <div>{myWidth} x {myHeight}</div>;
+      });
+
+      render((<FixedParent><SizerChild/></FixedParent>), node);
+    });
   });
 });
