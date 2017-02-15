@@ -3,10 +3,10 @@ import { findDOMNode } from 'react-dom';
 import hoistStatics from 'hoist-non-react-statics';
 import raf from 'raf';
 
-const defaultGetSize = domElement => ({width: domElement.clientWidth, height: domElement.clientHeight});
-const defaultWidthProp = 'width';
-const defaultHeightProp = 'height';
-const defaultGetDisplayName = name => `Sizer(${name})`;
+export const defaultGetSize = domElement => ({width: domElement.clientWidth, height: domElement.clientHeight});
+export const defaultWidthProp = 'width';
+export const defaultHeightProp = 'height';
+export const defaultGetDisplayName = name => `Sizer(${name})`;
 
 const placeholderStyle = {
   overflow: 'visible',
@@ -24,7 +24,8 @@ export default function sizer({
   getSize = defaultGetSize,
   widthProp = defaultWidthProp,
   heightProp = defaultHeightProp,
-  getDisplayName = defaultGetDisplayName
+  getDisplayName = defaultGetDisplayName,
+  updateSizeCallback = () => {}
 } = {}) {
   return function _sizer(WrappedComponent) {
     const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -36,6 +37,7 @@ export default function sizer({
       constructor(props) {
         super(props);
         this.state = {width: null, height: null};
+        this.DOMNode = null;
         this.parentDOMNode = null;
         this.setWrappedInstance = this.setWrappedInstance.bind(this);
         this.onResize = this.onResize.bind(this);
@@ -44,15 +46,17 @@ export default function sizer({
       setWrappedInstance(ref) {
         this.wrappedInstance = ref;
         if (ref) {
-          this.parentDOMNode = findDOMNode(ref).parentNode;
+          this.DOMNode = findDOMNode(ref);
+          this.parentDOMNode = this.DOMNode.parentNode;
         }
         else {
+          this.DOMNode = null;
           this.parentDOMNode = null;
         }
       }
 
       getWindow() {
-        return window; // eslint-disable-line no-undef
+        return this.DOMNode ? (this.DOMNode.ownerDocument.defaultView || window) : window; // eslint-disable-line no-undef
       }
 
       onResize() {
@@ -69,7 +73,7 @@ export default function sizer({
           const { width: oldWidth, height: oldHeight } = this.state;
           const { width, height } = getSize(this.parentDOMNode);
           if (width !== oldWidth || height !== oldHeight) {
-            this.setState({width, height});
+            this.setState({width, height}, updateSizeCallback);
           }
         }
       }
