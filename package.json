@@ -19,7 +19,7 @@
     "type": "git",
     "url": "git+https://github.com/jharris4/react-sizer.git"
   },
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "babel": {
     "presets": [
       "es2015"
