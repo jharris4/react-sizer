@@ -38,3 +38,27 @@ class MyComponent extends Component {
 const MySizedComponent = sizer()(MyComponent);
 
 ```
+
+## options
+
+The sizer HOC can be passed several options.
+
+```
+const options = {
+  getSize = domElement => ({width: domElement.clientWidth, height: domElement.clientHeight}),
+  widthProp = 'nameOfPropForInjectedWidth',
+  heightProp = 'nameOfPropForInjectedHeight',
+  getDisplayName = name => `NameOfComponentToShowInReactDevTools(${name})`
+};
+
+class MyComponent extends Component {
+  static propTypes = {
+    nameOfPropForInjectedWidth: PropTypes.number.isRequired,
+    nameOfPropForInjectedHeight: PropTypes.number.isRequired
+  };
+  
+  // ...
+}
+
+sizer(options)(MyComponent);
+```
