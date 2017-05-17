@@ -45,10 +45,10 @@ The sizer HOC can be passed several options.
 
 ```
 const options = {
-  getSize = domElement => ({width: domElement.clientWidth, height: domElement.clientHeight}),
-  widthProp = 'nameOfPropForInjectedWidth',
-  heightProp = 'nameOfPropForInjectedHeight',
-  getDisplayName = name => `NameOfComponentToShowInReactDevTools(${name})`
+  getSize: domElement => ({width: domElement.clientWidth, height: domElement.clientHeight}),
+  widthProp: 'nameOfPropForInjectedWidth',
+  heightProp: 'nameOfPropForInjectedHeight',
+  getDisplayName: name => `NameOfComponentToShowInReactDevTools(${name})`
 };
 
 class MyComponent extends Component {
