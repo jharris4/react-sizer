@@ -25,7 +25,8 @@ export default function sizer({
   widthProp = defaultWidthProp,
   heightProp = defaultHeightProp,
   getDisplayName = defaultGetDisplayName,
-  updateSizeCallback = () => {}
+  updateSizeCallback = () => {},
+  resizeProps = []
 } = {}) {
   return function _sizer(WrappedComponent) {
     const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -85,6 +86,13 @@ export default function sizer({
 
       componentWillUnmount () {
         this.getWindow().removeEventListener('resize', this.onResize);
+      }
+
+      componentWillReceiveProps(nextProps) {
+        const prevProps = this.props;
+        if (resizeProps.some(resizeProp => prevProps[resizeProp] !== nextProps[resizeProp])) {
+          this.onResize();
+        }
       }
 
       render() {
