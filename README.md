@@ -48,7 +48,9 @@ const options = {
   getSize: domElement => ({width: domElement.clientWidth, height: domElement.clientHeight}),
   widthProp: 'nameOfPropForInjectedWidth',
   heightProp: 'nameOfPropForInjectedHeight',
-  getDisplayName: name => `NameOfComponentToShowInReactDevTools(${name})`
+  getDisplayName: name => `NameOfComponentToShowInReactDevTools(${name})`,
+  updateSizeCallback: () => { /* code to be run after the size has changed */ },
+  resizeProps: [ 'one or more prop names', 'that will trigger recomputation of the size when their value changes']
 };
 
 class MyComponent extends Component {
