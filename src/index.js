@@ -48,7 +48,7 @@ export default function sizer({
         this.wrappedInstance = ref;
         if (ref) {
           this.DOMNode = findDOMNode(ref);
-          this.parentDOMNode = this.DOMNode.parentNode;
+          this.parentDOMNode = this.DOMNode ? this.DOMNode.parentNode : null;
         }
         else {
           this.DOMNode = null;
