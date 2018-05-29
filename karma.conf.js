@@ -65,7 +65,7 @@ module.exports = (config) => {
     webpack: {
       devtool: 'inline-source-map',
       module: {
-        loaders: [
+        rules: [
           { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
         ]
       },
