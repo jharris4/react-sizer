@@ -3,35 +3,39 @@ import { findDOMNode } from 'react-dom';
 import hoistStatics from 'hoist-non-react-statics';
 import raf from 'raf';
 
-export const defaultGetSize = domElement => ({width: domElement.clientWidth, height: domElement.clientHeight});
-export const defaultWidthProp = 'width';
-export const defaultHeightProp = 'height';
-export const defaultGetDisplayName = name => `Sizer(${name})`;
-
-const placeholderStyle = {
+const DEFAULT_GET_SIZE = domElement => ({width: domElement.clientWidth, height: domElement.clientHeight});
+const DEFAULT_PLACEHOLDER_STYLE = {
   overflow: 'visible',
   height: 0,
   width: 0
 };
-
-class Placeholder extends Component {
-  render() {
-    return createElement('div', { style: placeholderStyle });
-  }
-}
+const DEFAULT_WIDTH_PROP = 'width';
+const DEFAULT_HEIGHT_PROP = 'height';
+const DEFAULT_RESIZE_PROPS = [];
+const DEFAULT_UPDATE_SIZE_CALLBACK = () => { };
+const DEFAULT_UPDATE_SIZE_CALLBACK_PROP = 'updateSizeCallback';
+const DEFAULT_GET_DISPLAY_NAME = name => `Sizer(${name})`;
 
 export default function sizer({
-  getSize = defaultGetSize,
-  widthProp = defaultWidthProp,
-  heightProp = defaultHeightProp,
-  getDisplayName = defaultGetDisplayName,
-  updateSizeCallback = () => {},
-  resizeProps = []
+  getSize = DEFAULT_GET_SIZE,
+  placeholderStyle = DEFAULT_PLACEHOLDER_STYLE,
+  widthProp = DEFAULT_WIDTH_PROP,
+  heightProp = DEFAULT_HEIGHT_PROP,
+  resizeProps = DEFAULT_RESIZE_PROPS,
+  updateSizeCallback = DEFAULT_UPDATE_SIZE_CALLBACK,
+  updateSizeCallbackProp = DEFAULT_UPDATE_SIZE_CALLBACK_PROP,
+  getDisplayName = DEFAULT_GET_DISPLAY_NAME
 } = {}) {
   return function _sizer(WrappedComponent) {
-    const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+    const wrappedComponentName = WrappedComponent && (WrappedComponent.displayName || WrappedComponent.name) || 'Component';
 
-    const displayName = getDisplayName(wrappedComponentName);
+    const displayName = wrappedComponentName ? getDisplayName(wrappedComponentName) : 'sizer-none';
+
+    class Placeholder extends Component {
+      render() {
+        return createElement('span', { style: placeholderStyle, ref: this.props.placeholderRef });
+      }
+    }
 
     class Sizer extends Component {
 
@@ -74,7 +78,12 @@ export default function sizer({
           const { width: oldWidth, height: oldHeight } = this.state;
           const { width, height } = getSize(this.parentDOMNode);
           if (width !== oldWidth || height !== oldHeight) {
-            this.setState({width, height}, updateSizeCallback);
+            this.setState({width, height}, () => {
+              updateSizeCallback();
+              if (updateSizeCallbackProp && this.props[updateSizeCallbackProp]) {
+                this.props[updateSizeCallbackProp](width, height);
+              }
+            });
           }
         }
       }
@@ -98,11 +107,11 @@ export default function sizer({
       render() {
         const props = this.props;
         const { width, height } = this.state;
-        if (width || height) {
+        if (WrappedComponent && (width || height)) {
           return createElement(WrappedComponent, {...props, [widthProp]: width, [heightProp]: height, ref: this.setWrappedInstance});
         }
         else {
-          return createElement(Placeholder, {ref: this.setWrappedInstance});
+          return createElement(Placeholder, {placeholderRef: this.setWrappedInstance});
         }
       }
     }
@@ -110,6 +119,6 @@ export default function sizer({
     Sizer.displayName = displayName;
     Sizer.WrappedComponent = WrappedComponent;
 
-    return hoistStatics(Sizer, WrappedComponent);
+    return WrappedComponent ? hoistStatics(Sizer, WrappedComponent) : Sizer;
   }
 }
