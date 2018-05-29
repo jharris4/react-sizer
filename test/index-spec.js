@@ -1,6 +1,6 @@
 import React, { createElement, Component } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
-import expect from 'expect';
+import expect, { createSpy } from 'expect';
 import sizer from '../src';
 
 const FIXED_PARENT_WIDTH = 300;
@@ -9,14 +9,6 @@ const FIXED_PARENT_HEIGHT = 200;
 class FixedParent extends Component {
   render() {
     return <div style={{width: FIXED_PARENT_WIDTH, height: FIXED_PARENT_HEIGHT}}>{this.props.children}</div>;
-  }
-}
-
-class Child extends Component {
-  render() {
-    const { width, height } = this.props;
-
-    return <div>{width} x {height}</div>;
   }
 }
 
@@ -43,24 +35,38 @@ describe('react-sizer', function() {
 
   describe('initial render', function() {
     it('renders a child of a fixed sized parent with the correct width and height', function(done) {
+      const updateSizeCallback = () => {
+        expect(node.textContent).toEqual(FIXED_PARENT_WIDTH + ' x ' + FIXED_PARENT_HEIGHT);
+        done();
+      }
+
+      const spy = createSpy(updateSizeCallback).andCallThrough();
+
       const SizerChild = sizer({
-        updateSizeCallback: () => {
-          expect(node.textContent).toEqual(FIXED_PARENT_WIDTH + ' x ' + FIXED_PARENT_HEIGHT);
-          done();
-        }
-      })(Child);
+        updateSizeCallback: spy
+      })(function (props) {
+        const { width, height } = props;
+
+        return <div>{width} x {height}</div>;
+      });
 
       render((<FixedParent><SizerChild/></FixedParent>), node);
+
+      expect(spy.calls.length).toEqual(1);
     });
 
     it('supports changing the width and height props', function(done) {
+      const updateSizeCallback = () => {
+        expect(node.textContent).toEqual(FIXED_PARENT_WIDTH + ' x ' + FIXED_PARENT_HEIGHT);
+        done();
+      }
+
+      const spy = createSpy(updateSizeCallback).andCallThrough();
+
       const SizerChild = sizer({
         widthProp: 'myWidth',
         heightProp: 'myHeight',
-        updateSizeCallback: () => {
-          expect(node.textContent).toEqual(FIXED_PARENT_WIDTH + ' x ' + FIXED_PARENT_HEIGHT);
-          done();
-        }
+        updateSizeCallback: spy
       })(function(props) {
         const { myWidth, myHeight } = props;
 
@@ -68,6 +74,8 @@ describe('react-sizer', function() {
       });
 
       render((<FixedParent><SizerChild/></FixedParent>), node);
+
+      expect(spy.calls.length).toEqual(1);
     });
   });
 });
