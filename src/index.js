@@ -97,9 +97,9 @@ export default function sizer({
         this.getWindow().removeEventListener('resize', this.onResize);
       }
 
-      componentWillReceiveProps(nextProps) {
-        const prevProps = this.props;
-        if (resizeProps.some(resizeProp => prevProps[resizeProp] !== nextProps[resizeProp])) {
+      componentDidUpdate(prevProps) {
+        const nextProps = this.props;
+        if (resizeProps.some(resizeProp => nextProps[resizeProp] !== prevProps[resizeProp])) {
           this.onResize();
         }
       }
