@@ -9,6 +9,10 @@
     "height",
     "HOC"
   ],
+  "files": [
+    "src",
+    "lib"
+  ],
   "author": "jharris4",
   "license": "MIT",
   "bugs": {
