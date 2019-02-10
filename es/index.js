@@ -1,22 +1,3 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = sizer;
-
-var _react = _interopRequireWildcard(require("react"));
-
-var _reactDom = require("react-dom");
-
-var _hoistNonReactStatics = _interopRequireDefault(require("hoist-non-react-statics"));
-
-var _raf = _interopRequireDefault(require("raf"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
@@ -38,6 +19,12 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+import React, { Component, createElement } from 'react'; // eslint-disable-line no-unused-vars
+
+import { findDOMNode } from 'react-dom';
+import hoistStatics from 'hoist-non-react-statics';
+import raf from 'raf';
 
 var DEFAULT_GET_SIZE = function DEFAULT_GET_SIZE(domElement) {
   return {
@@ -63,7 +50,7 @@ var DEFAULT_GET_DISPLAY_NAME = function DEFAULT_GET_DISPLAY_NAME(name) {
   return "Sizer(".concat(name, ")");
 };
 
-function sizer() {
+export default function sizer() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
       _ref$getSize = _ref.getSize,
       getSize = _ref$getSize === void 0 ? DEFAULT_GET_SIZE : _ref$getSize,
@@ -100,7 +87,7 @@ function sizer() {
       _createClass(Placeholder, [{
         key: "render",
         value: function render() {
-          return (0, _react.createElement)('span', {
+          return createElement('span', {
             style: placeholderStyle,
             ref: this.props.placeholderRef
           });
@@ -108,7 +95,7 @@ function sizer() {
       }]);
 
       return Placeholder;
-    }(_react.Component);
+    }(Component);
 
     var Sizer =
     /*#__PURE__*/
@@ -138,7 +125,7 @@ function sizer() {
           this.wrappedInstance = ref;
 
           if (ref) {
-            this.DOMNode = (0, _reactDom.findDOMNode)(ref);
+            this.DOMNode = findDOMNode(ref);
             this.parentDOMNode = this.DOMNode ? this.DOMNode.parentNode : null;
           } else {
             this.DOMNode = null;
@@ -156,7 +143,7 @@ function sizer() {
           var _this2 = this;
 
           if (!this.rafId) {
-            this.rafId = (0, _raf.default)(function () {
+            this.rafId = raf(function () {
               _this2.rafId = null;
 
               _this2.updateSize();
@@ -224,9 +211,9 @@ function sizer() {
           if (WrappedComponent && (width || height)) {
             var _objectSpread2;
 
-            return (0, _react.createElement)(WrappedComponent, _objectSpread({}, props, (_objectSpread2 = {}, _defineProperty(_objectSpread2, widthProp, width), _defineProperty(_objectSpread2, heightProp, height), _defineProperty(_objectSpread2, "ref", this.setWrappedInstance), _objectSpread2)));
+            return createElement(WrappedComponent, _objectSpread({}, props, (_objectSpread2 = {}, _defineProperty(_objectSpread2, widthProp, width), _defineProperty(_objectSpread2, heightProp, height), _defineProperty(_objectSpread2, "ref", this.setWrappedInstance), _objectSpread2)));
           } else {
-            return (0, _react.createElement)(Placeholder, {
+            return createElement(Placeholder, {
               placeholderRef: this.setWrappedInstance
             });
           }
@@ -234,10 +221,10 @@ function sizer() {
       }]);
 
       return Sizer;
-    }(_react.Component);
+    }(Component);
 
     Sizer.displayName = displayName;
     Sizer.WrappedComponent = WrappedComponent;
-    return WrappedComponent ? (0, _hoistNonReactStatics.default)(Sizer, WrappedComponent) : Sizer;
+    return WrappedComponent ? hoistStatics(Sizer, WrappedComponent) : Sizer;
   };
 }
