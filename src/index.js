@@ -21,6 +21,7 @@ export default function sizer({
   placeholderStyle = DEFAULT_PLACEHOLDER_STYLE,
   widthProp = DEFAULT_WIDTH_PROP,
   heightProp = DEFAULT_HEIGHT_PROP,
+  getSizeProps = null,
   resizeProps = DEFAULT_RESIZE_PROPS,
   updateSizeCallback = DEFAULT_UPDATE_SIZE_CALLBACK,
   updateSizeCallbackProp = DEFAULT_UPDATE_SIZE_CALLBACK_PROP,
@@ -108,7 +109,13 @@ export default function sizer({
         const props = this.props;
         const { width, height } = this.state;
         if (WrappedComponent && (width || height)) {
-          return createElement(WrappedComponent, {...props, [widthProp]: width, [heightProp]: height, ref: this.setWrappedInstance});
+          if (getSizeProps) {
+            const sizeProps = getSizeProps({ width, height });
+            return createElement(WrappedComponent, {...props, ...sizeProps, ref: this.setWrappedInstance});
+          }
+          else {
+            return createElement(WrappedComponent, {...props, [widthProp]: width, [heightProp]: height, ref: this.setWrappedInstance});
+          }
         }
         else {
           return createElement(Placeholder, {placeholderRef: this.setWrappedInstance});
